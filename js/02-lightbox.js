@@ -20,7 +20,3 @@ let gallery = new SimpleLightbox('.gallery a', {
     captionPosition: 'bottom',
 });
 
-
-galleryEl.addEventListener('click', (event) => {
-    event.preventDefault();
-});

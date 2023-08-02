@@ -20,22 +20,27 @@ gallery.insertAdjacentHTML('beforeend', markup);
 
 const modalOpenPhoto = (event) => {
   event.preventDefault();
-  if (event.target.classList.contains('gallery__image')) {
-    const clickedImageAlt = event.target.getAttribute('alt');
-    const clickedImageSrc = event.target.dataset.source;
-    const instance = basicLightbox.create(`<img src="${clickedImageSrc}" alt="${clickedImageAlt}"/>`, {
-      onShow: (instance) => { },
-    });
-    instance.show(() => console.log('lightbox now visible'));
+  if (!event.target.classList.contains('gallery__image')) {
+    return;
   }
-  return;
+  const clickedImageAlt = event.target.getAttribute('alt');
+  const clickedImageSrc = event.target.dataset.source;
+  let instance = basicLightbox.create(`<img src="${clickedImageSrc}" alt="${clickedImageAlt}"/>`, {
+    onShow: (instance) => { document.addEventListener('keydown', OnEscPress) },
+    onClose: (instance) => {
+      document.removeEventListener('keydown', OnEscPress);
+      instance = null; // Удаляем ссылку на экземпляр
+    }
+  });
+
+  function OnEscPress(event) {
+    if (event.key !== "Escape") {
+      return;
+    }
+    instance.close(); // Закрываем модалку
+  }
+
+  instance.show();
 };
 
-
-gallery.addEventListener('click', (event) => {
-  modalOpenPhoto(event)
-});
-
-
-
-
+gallery.addEventListener('click', modalOpenPhoto);
